@@ -105,7 +105,7 @@ jobs:
             args: --bundles nsis,msi
             bundle: gg-app/src-tauri/target/release/bundle
           - os: macos
-            runner: macos-14
+            runner: macos-15
             args: --bundles app,dmg --target aarch64-apple-darwin
             bundle: gg-app/src-tauri/target/aarch64-apple-darwin/release/bundle
           # The oldest supported Ubuntu: the binary links the runner's glibc.

@@ -1,21 +1,24 @@
 name: Client installer
 
-# Builds one client's Windows installer from the private repo
-# Klarifai-B-V/klarifai-coach on GitHub's free runners for public repos, with
-# its update signature and latest.json. Publishing stays a manual step
-# (klanten/README.md in klarifai-coach, stap 5).
+# Builds one client's installers from the private repo
+# Klarifai-B-V/klarifai-coach on GitHub's free runners for public repos:
+# Windows (NSIS and MSI), macOS on Apple silicon (app and DMG, signed ad hoc)
+# and Linux (deb and rpm), each with its update signature, then one
+# latest.json for all of them. Publishing stays a manual step
+# (klanten/README.md in klarifai-coach, stap 5). Keep the build steps the same
+# as .github/workflows/klant-installer.yml in klarifai-coach.
 #
 # The source arrives encrypted, as an asset of the draft release "bron" (drafts
 # are not public), with a new key for every build:
 #   gg-app/scripts/bron-naar-releases.sh <klant>   (in klarifai-coach)
 # The environment klant-installer holds that key and the update key, for main
-# only, and asks Romano's approval for every run.
+# only, and asks Romano's approval: once for the three builds, and once more
+# for the job that makes latest.json.
 #
 # No job holds both the keys and write access to this repo, where the
 # installers and latest.json live. Reading a draft needs write access, so the
 # job "bron" fetches the package without third-party code and hands it on
-# still encrypted; the job "installer" decrypts and builds with a read-only
-# token.
+# still encrypted; the other jobs decrypt it with a read-only token.
 #
 # Logs and artifacts of a public repo are public: no step prints a secret or
 # source. The artifacts hold the encrypted package (until
@@ -91,10 +94,27 @@ jobs:
           compression-level: 0
 
   installer:
-    name: installer · ${{ inputs.klant }}
+    name: installer · ${{ inputs.klant }} · ${{ matrix.os }}
     needs: bron
-    runs-on: windows-latest
-    # Cold cache: the Tauri dependency tree plus two bundles (NSIS and MSI).
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows
+            runner: windows-latest
+            args: --bundles nsis,msi
+            bundle: gg-app/src-tauri/target/release/bundle
+          - os: macos
+            runner: macos-14
+            args: --bundles app,dmg --target aarch64-apple-darwin
+            bundle: gg-app/src-tauri/target/aarch64-apple-darwin/release/bundle
+          # The oldest supported Ubuntu: the binary links the runner's glibc.
+          - os: linux
+            runner: ubuntu-22.04
+            args: --bundles deb,rpm
+            bundle: gg-app/src-tauri/target/release/bundle
+    runs-on: ${{ matrix.runner }}
+    # Cold cache: the Tauri dependency tree plus two bundles.
     timeout-minutes: 90
     environment: klant-installer
     # No permissions block: the workflow's read-only token, as this job holds the keys.
@@ -117,6 +137,7 @@ jobs:
           name: bron
 
       # Relative paths on purpose: Git Bash's tar reads "D:\..." as a remote host.
+      # macOS: Homebrew's OpenSSL, as the system LibreSSL may lack -pbkdf2.
       - name: Source package (decrypt, check, unpack)
         shell: bash
         env:
@@ -125,13 +146,15 @@ jobs:
           COACH_SOURCE_KEY: ${{ secrets.COACH_SOURCE_KEY }}
         run: |
           set -euo pipefail
+          openssl=openssl
+          [[ -x /opt/homebrew/opt/openssl@3/bin/openssl ]] && openssl=/opt/homebrew/opt/openssl@3/bin/openssl
           package="klarifai-coach-$BRON.tar.gz.enc"
-          openssl enc -d -aes-256-cbc -md sha256 -pbkdf2 -iter 600000 -pass env:COACH_SOURCE_KEY -in "$package" -out bron.tar.gz
+          "$openssl" enc -d -aes-256-cbc -md sha256 -pbkdf2 -iter 600000 -pass env:COACH_SOURCE_KEY -in "$package" -out bron.tar.gz
           rm -f "$package"
-          echo "$BRON_SHA256  bron.tar.gz" | sha256sum -c -
+          if command -v sha256sum >/dev/null; then sum=(sha256sum); else sum=(shasum -a 256); fi
+          echo "$BRON_SHA256  bron.tar.gz" | "${sum[@]}" -c -
           tar -xzf bron.tar.gz
           rm -f bron.tar.gz
-          echo "klarifai-coach $BRON" > BUILD-COMMIT.txt
 
       # pnpm version comes from package.json's packageManager field.
       - uses: pnpm/action-setup@v6
@@ -142,10 +165,18 @@ jobs:
           cache: pnpm
 
       - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.os == 'macos' && 'aarch64-apple-darwin' || '' }}
 
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: gg-app/src-tauri
+
+      - name: Linux system deps (tauri)
+        if: matrix.os == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev patchelf libayatana-appindicator3-dev
 
       - name: Install
         shell: bash
@@ -169,61 +200,153 @@ jobs:
         shell: bash
         run: node gg-app/scripts/smoke-sidecar.mjs
 
+      # Tauri signs the app shell and the externalBin, not the Mach-O files
+      # under bundle.resources (the sidecar's native addons).
+      - name: Sign nested bundle binaries ad hoc (macOS)
+        if: matrix.os == 'macos'
+        shell: bash
+        run: bash gg-app/scripts/sign-nested-macos.sh - gg-app/src-tauri/binaries gg-app/src-tauri/sidecar
+
       # Only this step sees the update key. Tauri signs each installer with it
       # and writes the signature next to it (<installer>.sig).
-      - name: Build the client installer (NSIS + MSI, with update signatures)
+      - name: Build the client installers (with update signatures)
         shell: bash
         env:
           KLANT: ${{ inputs.klant }}
+          ARGS: ${{ matrix.args }}
+          BUNDLE: ${{ matrix.bundle }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          # macOS: "-" signs ad hoc; without an Apple ID there is no notarization.
+          APPLE_SIGNING_IDENTITY: ${{ matrix.os == 'macos' && '-' || '' }}
         run: |
-          rm -rf gg-app/src-tauri/target/release/bundle
-          node gg-app/scripts/build-klant.mjs "$KLANT" --ci --bundles nsis,msi
+          rm -rf "$BUNDLE"
+          # shellcheck disable=SC2086 # ARGS holds several arguments
+          node gg-app/scripts/build-klant.mjs "$KLANT" --ci $ARGS
 
-      # Gate: an installer signed with another key than tauri.conf.json carries
-      # would be an update every installed app refuses without a word.
-      - name: Update manifest (latest.json, signature checked against tauri.conf.json)
+      # The bundler names the macOS updater archive <name>.app.tar.gz; latest.json
+      # links to it by version and arch, like the other installers.
+      - name: Collect the installers
         shell: bash
         env:
-          KLANT: ${{ inputs.klant }}
+          OS: ${{ matrix.os }}
+          BUNDLE: ${{ matrix.bundle }}
         run: |
           set -euo pipefail
-          bundle=gg-app/src-tauri/target/release/bundle
-          installers=("$bundle"/nsis/*-setup.exe)
-          [[ ${#installers[@]} -eq 1 && -f "${installers[0]}" ]] || {
-            echo "expected exactly one NSIS installer in $bundle/nsis" >&2
-            exit 1
-          }
-          node gg-app/scripts/update-manifest.mjs "$KLANT" "${installers[0]}" "$bundle/latest.json"
-          node gg-app/scripts/update-manifest.mjs --controleer "$bundle/latest.json" "${installers[0]}"
-          cp BUILD-COMMIT.txt "$bundle/BUILD-COMMIT.txt"
-
-      - name: Checksums
-        shell: bash
-        working-directory: gg-app/src-tauri/target/release/bundle
-        run: sha256sum nsis/*.exe nsis/*.exe.sig msi/*.msi latest.json BUILD-COMMIT.txt | tee SHA256SUMS.txt
+          version="$(node -p 'require("./gg-app/src-tauri/tauri.conf.json").version')"
+          mkdir deel
+          case "$OS" in
+            windows) files=("$BUNDLE"/nsis/*-setup.exe "$BUNDLE"/nsis/*-setup.exe.sig "$BUNDLE"/msi/*.msi) ;;
+            macos)
+              archives=("$BUNDLE"/macos/*.app.tar.gz)
+              [[ ${#archives[@]} -eq 1 && -f "${archives[0]}" ]] || {
+                echo "expected exactly one updater archive in $BUNDLE/macos" >&2
+                exit 1
+              }
+              name="$(basename "${archives[0]}" .app.tar.gz)"
+              cp "${archives[0]}" "deel/${name}_${version}_aarch64.app.tar.gz"
+              cp "${archives[0]}.sig" "deel/${name}_${version}_aarch64.app.tar.gz.sig"
+              files=("$BUNDLE"/dmg/*.dmg)
+              ;;
+            linux) files=("$BUNDLE"/deb/*.deb "$BUNDLE"/deb/*.deb.sig "$BUNDLE"/rpm/*.rpm "$BUNDLE"/rpm/*.rpm.sig) ;;
+          esac
+          for file in "${files[@]}"; do
+            [[ -f "$file" ]] || {
+              echo "missing $file" >&2
+              exit 1
+            }
+            cp "$file" deel/
+          done
+          ls -l deel
 
       - uses: actions/upload-artifact@v7
         with:
-          name: installer-${{ inputs.klant }}
-          path: |
-            gg-app/src-tauri/target/release/bundle/nsis/*.exe
-            gg-app/src-tauri/target/release/bundle/nsis/*.exe.sig
-            gg-app/src-tauri/target/release/bundle/msi/*.msi
-            gg-app/src-tauri/target/release/bundle/latest.json
-            gg-app/src-tauri/target/release/bundle/BUILD-COMMIT.txt
-            gg-app/src-tauri/target/release/bundle/SHA256SUMS.txt
+          name: deel-${{ inputs.klant }}-${{ matrix.os }}
+          path: deel/
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 1
           # Installers are already compressed.
           compression-level: 0
 
       # Gate: the packaged client app must come up with a visible window and
       # the bundled sidecar. It runs after the upload, so a failing launch
-      # still leaves the installer to inspect. Never publish a red run.
+      # still leaves the installer to inspect; latest.json is then not made.
+      # Never publish a red run.
       - name: Packaged app smoke (client MSI launch)
+        if: matrix.os == 'windows'
         shell: bash
         run: |
           msi="$(ls gg-app/src-tauri/target/release/bundle/msi/*.msi | head -n 1)"
           node gg-app/scripts/smoke-packaged-windows.mjs --artifact "$msi"
+
+  uitlevering:
+    name: latest.json · ${{ inputs.klant }}
+    needs: installer
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Only for the source key: the manifest script comes from the private source.
+    environment: klant-installer
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: bron
+
+      - name: Source package (decrypt, check, unpack)
+        shell: bash
+        env:
+          BRON: ${{ inputs.bron }}
+          BRON_SHA256: ${{ inputs.bron_sha256 }}
+          COACH_SOURCE_KEY: ${{ secrets.COACH_SOURCE_KEY }}
+        run: |
+          set -euo pipefail
+          package="klarifai-coach-$BRON.tar.gz.enc"
+          openssl enc -d -aes-256-cbc -md sha256 -pbkdf2 -iter 600000 -pass env:COACH_SOURCE_KEY -in "$package" -out bron.tar.gz
+          rm -f "$package"
+          echo "$BRON_SHA256  bron.tar.gz" | sha256sum -c -
+          tar -xzf bron.tar.gz
+          rm -f bron.tar.gz
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22.x
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: deel-${{ inputs.klant }}-*
+          path: deel
+          merge-multiple: true
+
+      # Gate: an installer signed with another key than tauri.conf.json carries
+      # would be an update every installed app refuses without a word.
+      - name: Release files, latest.json (signatures checked against tauri.conf.json), checksums
+        shell: bash
+        env:
+          KLANT: ${{ inputs.klant }}
+          BRON: ${{ inputs.bron }}
+        run: |
+          set -euo pipefail
+          mkdir uitlevering
+          # The names they get in the release: GitHub would turn a space into a dot.
+          for file in deel/*; do
+            cp "$file" "uitlevering/$(basename "$file" | tr ' ' '-')"
+          done
+          cd uitlevering
+          updates=(*_x64-setup.exe *_aarch64.app.tar.gz *_amd64.deb *.x86_64.rpm)
+          for file in "${updates[@]}"; do
+            [[ -f "$file" ]] || {
+              echo "missing $file" >&2
+              exit 1
+            }
+          done
+          node ../gg-app/scripts/update-manifest.mjs "$KLANT" "${updates[@]}" latest.json
+          node ../gg-app/scripts/update-manifest.mjs --controleer latest.json "${updates[@]}"
+          echo "klarifai-coach $BRON" > BUILD-COMMIT.txt
+          sha256sum -- * | tee SHA256SUMS.txt
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: installer-${{ inputs.klant }}
+          path: uitlevering/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0

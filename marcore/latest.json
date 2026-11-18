@@ -1,0 +1,29 @@
+{
+  "version": "0.1.5",
+  "platforms": {
+    "windows-x86_64-nsis": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1hrK1JlNUlUSXV0WUFPMG53OEV0R21WUjc5MWUxdlY3Y0ZweEdEY2ZETEhkeXhQQXFtdENGRm9EUndYcWlqb21Oa21EazlTWWJ0NE9OSHVhYVB3aEFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MDEyNTc0CWZpbGU6TWFyY29yZSBXb3Jrc3BhY2VfMC4xLjVfeDY0LXNldHVwLmV4ZQpJZ0VQeWZZQkF0aytvQ1RmdEZBM29uRkRtRkN6SDFJbC9weTIzVitZZS9wZnNSUW9JUytLekVadmZHUEk5c0VIeEwyUXVjRVFtblczK25yT3I1d1ZCQT09Cg==",
+      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/marcore-v0.1.5/Marcore-Workspace_0.1.5_x64-setup.exe"
+    },
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1hrK1JlNUlUSXV0WUFPMG53OEV0R21WUjc5MWUxdlY3Y0ZweEdEY2ZETEhkeXhQQXFtdENGRm9EUndYcWlqb21Oa21EazlTWWJ0NE9OSHVhYVB3aEFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MDEyNTc0CWZpbGU6TWFyY29yZSBXb3Jrc3BhY2VfMC4xLjVfeDY0LXNldHVwLmV4ZQpJZ0VQeWZZQkF0aytvQ1RmdEZBM29uRkRtRkN6SDFJbC9weTIzVitZZS9wZnNSUW9JUytLekVadmZHUEk5c0VIeEwyUXVjRVFtblczK25yT3I1d1ZCQT09Cg==",
+      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/marcore-v0.1.5/Marcore-Workspace_0.1.5_x64-setup.exe"
+    },
+    "darwin-aarch64-app": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1ZFSnFZN01hOHFYUnhuRWFSdTF6SGdDV2h5TThzZVB4YzBZK09xWHU5NnF0NDhzbUdqS25yYWRpYTlVTTVyVUNCUm5ZQjZ1UEpZZE9SSmpnOWhleWdvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MDEyNTQwCWZpbGU6TWFyY29yZSBXb3Jrc3BhY2UuYXBwLnRhci5negpWak42M2U3Y3prcEU1R1hWbnNramkzSUtSQXJBSmorQkNxS1lpSENHY2ZaUlRBa2hWU3NmMnNtWnFXemttb05xa0Y0VjFBWVFEZXNhRDdSVkVLMEhBUT09Cg==",
+      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/marcore-v0.1.5/Marcore-Workspace_0.1.5_aarch64.app.tar.gz"
+    },
+    "darwin-aarch64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1ZFSnFZN01hOHFYUnhuRWFSdTF6SGdDV2h5TThzZVB4YzBZK09xWHU5NnF0NDhzbUdqS25yYWRpYTlVTTVyVUNCUm5ZQjZ1UEpZZE9SSmpnOWhleWdvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MDEyNTQwCWZpbGU6TWFyY29yZSBXb3Jrc3BhY2UuYXBwLnRhci5negpWak42M2U3Y3prcEU1R1hWbnNramkzSUtSQXJBSmorQkNxS1lpSENHY2ZaUlRBa2hWU3NmMnNtWnFXemttb05xa0Y0VjFBWVFEZXNhRDdSVkVLMEhBUT09Cg==",
+      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/marcore-v0.1.5/Marcore-Workspace_0.1.5_aarch64.app.tar.gz"
+    },
+    "linux-x86_64-deb": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1ErdGJrVjBmSzBXTnN0VUF4VnpxYjBYZUdxK1BFUk5MV3dsdVdEODFBTWlaUWNkTU1aWGpOWEo3QUtueG1YT3pSaDBEVkdkNTZjR1pIQVRwSVBvakFZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MDE1MTI2CWZpbGU6TWFyY29yZSBXb3Jrc3BhY2VfMC4xLjVfYW1kNjQuZGViCnl6RS9IWCtFcFZUaE9iWC85ZGpCc2dydzU5OGNycXl1TnZxR3J1d0hZRms4YnJHSDhoY1NZS005SEFJdnhnN2NMeitoY29LV2lTdkZwSm1sd1RmRkNBPT0K",
+      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/marcore-v0.1.5/Marcore-Workspace_0.1.5_amd64.deb"
+    },
+    "linux-x86_64-rpm": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM2JxZ2QvVmcycy84WFF3OHdGdS9Ca1Y1NE1KbEIrYmQ0T3MwQ2tNakRmYUFRTU1HZmRkM2xFd3piczV5bW90UG12czlKUkdFcytVZUZvUTg4Myt2ZlFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1MDE1MTI2CWZpbGU6TWFyY29yZSBXb3Jrc3BhY2UtMC4xLjUtMS54ODZfNjQucnBtCkNiZkg3RUUvbkJFaWxMeHZHd1QvM1ZYT0lZRUFCM2lQTFZMMFdNUUtkZlNKYTVoNGV6WVIwZnRlR0hDY2phSGRsaUdLdE5jazk5ZSs5Z0dEOUkzNUNnPT0K",
+      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/marcore-v0.1.5/Marcore-Workspace-0.1.5-1.x86_64.rpm"
+    }
+  }
+}

@@ -1,0 +1,57 @@
+name: Update key backup
+
+# One-off (Romano, 24 November 2026): the update key lived only as a secret of
+# the environment klant-installer. This run encrypts it to a public key whose
+# private half stays on Romano's laptop, so the key can go into his password
+# manager. Logs and artifacts of this repo are public: nothing here prints a
+# secret, and the artifact is encrypted. Removed again after the run.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ontvanger:
+        description: "RSA public key (PEM, base64 on one line) to encrypt to"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: klant-installer
+    steps:
+      - name: Encrypt the update key to the recipient
+        shell: bash
+        env:
+          ONTVANGER: ${{ inputs.ontvanger }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_REF" == "refs/heads/main" ]] || { echo "Run this workflow from main" >&2; exit 1; }
+          for name in TAURI_SIGNING_PRIVATE_KEY TAURI_SIGNING_PRIVATE_KEY_PASSWORD; do
+            [[ -n "${!name:-}" ]] || { echo "Missing environment secret: $name" >&2; exit 1; }
+          done
+          umask 077
+          mkdir backup
+          printf '%s' "$ONTVANGER" | base64 -d > ontvanger.pem
+          openssl pkey -pubin -in ontvanger.pem -noout
+          SLEUTEL="$(openssl rand -hex 32)"
+          export SLEUTEL
+          printf '%s\n%s\n' "$TAURI_SIGNING_PRIVATE_KEY" "$TAURI_SIGNING_PRIVATE_KEY_PASSWORD" |
+            openssl enc -aes-256-cbc -md sha256 -pbkdf2 -iter 600000 -salt -pass env:SLEUTEL -out backup/sleutel.enc
+          printf '%s' "$SLEUTEL" |
+            openssl pkeyutl -encrypt -pubin -inkey ontvanger.pem \
+              -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256 -out backup/sleutel.key.enc
+          unset SLEUTEL
+          ls -l backup
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: sleutel-backup
+          path: backup/
+          if-no-files-found: error
+          retention-days: 1

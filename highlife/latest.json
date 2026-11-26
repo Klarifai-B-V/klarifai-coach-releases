@@ -1,29 +1,29 @@
 {
-  "version": "0.1.6",
+  "version": "0.1.7",
   "platforms": {
     "windows-x86_64-nsis": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1hTVkV6UytITFh1MHNxZWVKUDB2S2FnQVY1anFDV00wVVc0YldiL3RWSnN4bUU3VmpxcXhpd3lhbFF2cVZWelhuOSs2cmN0WkU0SlpLcGFSS0JqbEFFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NDYzODU3CWZpbGU6SGlnaGxpZmUgQ29hY2hfMC4xLjZfeDY0LXNldHVwLmV4ZQpPZS9IWUkvL2l5K3AxbExEajRkdU5nT2oyZTlZelNKbXU0OXZJN1oxOWtFSnFGOHNpUXRhRHJxRWluOExZNzRKSHNHU3g3Q2hwZnFlZi9KYnJZUHNCZz09Cg==",
-      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/highlife-v0.1.6/Highlife-Coach_0.1.6_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1hlUzJ2Y08zSlBvenVEQ1BOVkMyTmVGaGFadm5WRENiZ1NTMXhlc205L2hZWkgzMFlVeWRlSExKT01VN1gzT0Q1d2lNamZRTnNjcGpxRXFOVnA3VFFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NzA0MDI5CWZpbGU6SGlnaGxpZmUgQ29hY2hfMC4xLjdfeDY0LXNldHVwLmV4ZQp0bHlLOVZsVVEwQ2F6WFRCalY4ZHNMN2VHTmtzdEdsK3k5M3llaUN6K0hYdHRoVnVGWXZJaU1KM1M2MW5uVEpaRnRZYTJ1dWJuQVJuT1ZvaGlHc0VEQT09Cg==",
+      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/highlife-v0.1.7/Highlife-Coach_0.1.7_x64-setup.exe"
     },
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1hTVkV6UytITFh1MHNxZWVKUDB2S2FnQVY1anFDV00wVVc0YldiL3RWSnN4bUU3VmpxcXhpd3lhbFF2cVZWelhuOSs2cmN0WkU0SlpLcGFSS0JqbEFFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NDYzODU3CWZpbGU6SGlnaGxpZmUgQ29hY2hfMC4xLjZfeDY0LXNldHVwLmV4ZQpPZS9IWUkvL2l5K3AxbExEajRkdU5nT2oyZTlZelNKbXU0OXZJN1oxOWtFSnFGOHNpUXRhRHJxRWluOExZNzRKSHNHU3g3Q2hwZnFlZi9KYnJZUHNCZz09Cg==",
-      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/highlife-v0.1.6/Highlife-Coach_0.1.6_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1hlUzJ2Y08zSlBvenVEQ1BOVkMyTmVGaGFadm5WRENiZ1NTMXhlc205L2hZWkgzMFlVeWRlSExKT01VN1gzT0Q1d2lNamZRTnNjcGpxRXFOVnA3VFFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NzA0MDI5CWZpbGU6SGlnaGxpZmUgQ29hY2hfMC4xLjdfeDY0LXNldHVwLmV4ZQp0bHlLOVZsVVEwQ2F6WFRCalY4ZHNMN2VHTmtzdEdsK3k5M3llaUN6K0hYdHRoVnVGWXZJaU1KM1M2MW5uVEpaRnRZYTJ1dWJuQVJuT1ZvaGlHc0VEQT09Cg==",
+      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/highlife-v0.1.7/Highlife-Coach_0.1.7_x64-setup.exe"
     },
     "darwin-aarch64-app": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1d4VC9kUnhMNlpDNTNuS1ltSmN1YnFMbE5jVHFGTFdzaUc3ODhpNjl0Zy82THlpdXVPb1djMXhqYVpiL1JlS0tBZU9NUVk0citqenJXcGNKKzVnQXdJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NDYzNjc0CWZpbGU6SGlnaGxpZmUgQ29hY2guYXBwLnRhci5negpNY3hENzd0ekQzb1V1d1B5OEtPZmcrNDh3ZFFIS1AzdS9wU3NKdWdqWWtvUmNHQU54YzZCaDhxdWcxTVhLQk95TEFWQXVlMlNTWGU5NjRlOGpNaVZBUT09Cg==",
-      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/highlife-v0.1.6/Highlife-Coach_0.1.6_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1FQdXFVdW0xZ3ZOM1pWcnpBWkc5bTVoUVVSSXhFOEpBL3F3WXYrUlg4RXppSGI4SzQvTEw4UVI5QU13K2U5T1k4RnorbGZtWWduQktjZjVXcmhHMVFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NzAzODAzCWZpbGU6SGlnaGxpZmUgQ29hY2guYXBwLnRhci5negp5QUZTRm16aWdqY0xyOFdONUp1TUQzd0FWdTBBMG1zTXJTaDN3K3FHQXk0bUl1ZHk4eEtVdElXTEkwWjBWcjNHS0hoNExLK2IyLzFDN3ZDbHpOdU5EUT09Cg==",
+      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/highlife-v0.1.7/Highlife-Coach_0.1.7_aarch64.app.tar.gz"
     },
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1d4VC9kUnhMNlpDNTNuS1ltSmN1YnFMbE5jVHFGTFdzaUc3ODhpNjl0Zy82THlpdXVPb1djMXhqYVpiL1JlS0tBZU9NUVk0citqenJXcGNKKzVnQXdJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NDYzNjc0CWZpbGU6SGlnaGxpZmUgQ29hY2guYXBwLnRhci5negpNY3hENzd0ekQzb1V1d1B5OEtPZmcrNDh3ZFFIS1AzdS9wU3NKdWdqWWtvUmNHQU54YzZCaDhxdWcxTVhLQk95TEFWQXVlMlNTWGU5NjRlOGpNaVZBUT09Cg==",
-      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/highlife-v0.1.6/Highlife-Coach_0.1.6_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1FQdXFVdW0xZ3ZOM1pWcnpBWkc5bTVoUVVSSXhFOEpBL3F3WXYrUlg4RXppSGI4SzQvTEw4UVI5QU13K2U5T1k4RnorbGZtWWduQktjZjVXcmhHMVFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NzAzODAzCWZpbGU6SGlnaGxpZmUgQ29hY2guYXBwLnRhci5negp5QUZTRm16aWdqY0xyOFdONUp1TUQzd0FWdTBBMG1zTXJTaDN3K3FHQXk0bUl1ZHk4eEtVdElXTEkwWjBWcjNHS0hoNExLK2IyLzFDN3ZDbHpOdU5EUT09Cg==",
+      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/highlife-v0.1.7/Highlife-Coach_0.1.7_aarch64.app.tar.gz"
     },
     "linux-x86_64-deb": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM2JxRFBzSUc1VkF4WWtEL0FGRnJ6TG9kenZwMmJJRVZFKzB3czRNbit2c05EZzF2RFc3YjdIZEJTZVNIQkpoeUVheGc3QWNoZmxRenRvS3F6d3lVaVEwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NDY2NTk5CWZpbGU6SGlnaGxpZmUgQ29hY2hfMC4xLjZfYW1kNjQuZGViCnVMWjl6YWR4Y3JnTUgydDY3clN5R2FiYlV1MUYxd1Z6aUlWOStRT0l2OW9UTUk1QUZQNyttYlhmTGk2OS9JR29VZFR4aTJzY2RQdTdoTTRYenhBa0RBPT0K",
-      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/highlife-v0.1.6/Highlife-Coach_0.1.6_amd64.deb"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1JHbWZCNDdGUlpkMld0L2xnQXZSZmRXVjZEMXA5VndVVjR3ZlN5MjFPd3pHTDJoc2pGS1FDTkcvV1lXSU1YTTlVeEhLSG56bDM1Q3Q4aUk0VmlPdFFVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NzA2NzU2CWZpbGU6SGlnaGxpZmUgQ29hY2hfMC4xLjdfYW1kNjQuZGViCjB0dzJ1cXRTY01PK080dkVZamZtSzB0T0hsQTVOY1dNY25IKzBqVkxGTWUzMGlqb0xEMkwzN21lbUp0Y0p1OUVlTFlQeVQ1SDRHZkphc2RsMWd6NEJRPT0K",
+      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/highlife-v0.1.7/Highlife-Coach_0.1.7_amd64.deb"
     },
     "linux-x86_64-rpm": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1g1YW5GTGovM3M2ZGRFUS9RSzVkYzg0U2J3QXl4VnQ1ay95WnAzOFV0dXM5UVBIaVJiN04zK0RmUkRLS3FTQ01NbGdHN25BTzVsTWJLR0p2aWRsV2dNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NDY2NjAwCWZpbGU6SGlnaGxpZmUgQ29hY2gtMC4xLjYtMS54ODZfNjQucnBtCnpGNllOZE1mRFRGc2hLVUN3OSttVUx6OGxCWEMrT3NsV2pSZy9PMDV6Y1VMTVk3c3J3RXdkTkd1cU12cVVEVkdMQ0gxNXRnKy9JWDU5bXAxa0JHUkJRPT0K",
-      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/highlife-v0.1.6/Highlife-Coach-0.1.6-1.x86_64.rpm"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRdWdtSGlZWU0zM1p4WlZmeVZqU0xMQmdFSVJCZkFRNEpGM0JyRkRXaUROZTVKK3dPSkQxL0FBbGpXemV0S0x1MGxsM0dPQkthZEljTlVFTjhPVnVKNXRHVEhQa0x3ZFFZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk1NzA2NzU2CWZpbGU6SGlnaGxpZmUgQ29hY2gtMC4xLjctMS54ODZfNjQucnBtCjBqOEVDdW1Xa2RITGpYNjVSZFB6d2Y3VDVkVUljVnA3ZG9iMGlYYnFOR0dyTlJzWW9zdS9BZHkrU056WkFJUWZtL0Z5SzVjUkZzd282c3FFdHllQUNRPT0K",
+      "url": "https://github.com/Klarifai-B-V/klarifai-coach-releases/releases/download/highlife-v0.1.7/Highlife-Coach-0.1.7-1.x86_64.rpm"
     }
   }
 }

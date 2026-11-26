@@ -1,16 +1,19 @@
 name: Client installer
 
-# Builds one client's installers from the private repo
+# Builds client installers from the private repo
 # Klarifai-B-V/klarifai-chat (until 16 November 2026 klarifai-coach) on GitHub's free runners for public repos:
+# for one client, or with klant=alle for every client in that repo's
+# klanten/uitbrengen.json, all from the same commit. Per client:
 # Windows (NSIS and MSI), macOS on Apple silicon (app and DMG, signed ad hoc)
 # and Linux (deb and rpm), each with its update signature, then one
-# latest.json for all of them. Publishing stays a manual step
-# (klanten/README.md in klarifai-chat, stap 5). Keep the build steps the same
-# as .github/workflows/klant-installer.yml in klarifai-chat.
+# latest.json for all of them. Publishing stays a separate step, and Romano's
+# (gg-app/scripts/publiceer.mjs and klanten/README.md in klarifai-chat, stap 5).
+# Keep the build steps the same as .github/workflows/klant-installer.yml in
+# klarifai-chat.
 #
 # The source arrives encrypted, as an asset of the draft release "bron" (drafts
 # are not public), with a new key for every build:
-#   gg-app/scripts/bron-naar-releases.sh <klant>   (in klarifai-chat)
+#   gg-app/scripts/bron-naar-releases.sh <klant>   (in klarifai-chat; --alle for every client)
 # The environment klant-installer holds that key and the update key, for main
 # only, and asks Romano's approval: once for the three builds, and once more
 # for the job that makes latest.json.
@@ -29,8 +32,13 @@ on:
   workflow_dispatch:
     inputs:
       klant:
-        description: "Folder under klanten/, for example highlife"
+        description: "Folder under klanten/, for example highlife; or alle, for every client in klanten/uitbrengen.json"
         required: true
+        type: string
+      klanten:
+        description: "With klant=alle: klanten/uitbrengen.json of that commit, as JSON (bron-naar-releases.sh --alle fills it in)"
+        required: false
+        default: ""
         type: string
       bron:
         description: "Commit of klarifai-chat the source package was made from"
@@ -56,19 +64,35 @@ jobs:
     permissions:
       # Only to read the draft release "bron"; drafts need write access.
       contents: write
+    outputs:
+      lijst: ${{ steps.inputs.outputs.lijst }}
     steps:
+      # The clients this run builds: the one asked for, or the release list. This job can't
+      # read the source, so the list comes in as an input; the builds check it against the source.
       - name: Inputs
+        id: inputs
         shell: bash
         env:
           KLANT: ${{ inputs.klant }}
+          KLANTEN: ${{ inputs.klanten }}
           BRON: ${{ inputs.bron }}
           BRON_SHA256: ${{ inputs.bron_sha256 }}
         run: |
           set -euo pipefail
           [[ "$GITHUB_REF" == "refs/heads/main" ]] || { echo "Run this workflow from main" >&2; exit 1; }
-          [[ "$KLANT" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] || { echo "klant must be a folder name under klanten/" >&2; exit 1; }
           [[ "$BRON" =~ ^[0-9a-f]{40}$ ]] || { echo "bron must be a full commit hash" >&2; exit 1; }
           [[ "$BRON_SHA256" =~ ^[0-9a-f]{64}$ ]] || { echo "bron_sha256 must be a SHA-256" >&2; exit 1; }
+          if [[ "$KLANT" == "alle" ]]; then
+            lijst="$(jq -ce 'select(type == "array" and length > 0 and all(.[]; type == "string" and test("^[a-z0-9]+(-[a-z0-9]+)*$")))' <<<"$KLANTEN")" || {
+              echo "klanten must be a JSON list of folder names under klanten/" >&2
+              exit 1
+            }
+          else
+            [[ "$KLANT" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]] || { echo "klant must be a folder name under klanten/, or alle" >&2; exit 1; }
+            lijst="[\"$KLANT\"]"
+          fi
+          echo "building for $lijst"
+          echo "lijst=$lijst" >> "$GITHUB_OUTPUT"
 
       - name: Encrypted source package (draft release "bron")
         shell: bash
@@ -94,11 +118,14 @@ jobs:
           compression-level: 0
 
   installer:
-    name: installer · ${{ inputs.klant }} · ${{ matrix.os }}
+    name: installer · ${{ matrix.klant }} · ${{ matrix.os }}
     needs: bron
     strategy:
       fail-fast: false
       matrix:
+        klant: ${{ fromJSON(needs.bron.outputs.lijst) }}
+        os: [windows, macos, linux]
+        # Each adds its runner and bundles to that os, for every client.
         include:
           - os: windows
             runner: windows-latest
@@ -164,6 +191,19 @@ jobs:
           node-version: 22.x
           cache: pnpm
 
+      # Before the long build: "alle" means the list in this source, not one made up for the run.
+      - name: The clients are klanten/uitbrengen.json of this source
+        if: inputs.klant == 'alle'
+        shell: bash
+        env:
+          LIJST: ${{ needs.bron.outputs.lijst }}
+        run: |
+          set -euo pipefail
+          [[ "$(node gg-app/scripts/build-klant.mjs --lijst)" == "$LIJST" ]] || {
+            echo "This run's clients are not klanten/uitbrengen.json of this source" >&2
+            exit 1
+          }
+
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.os == 'macos' && 'aarch64-apple-darwin' || '' }}
@@ -212,7 +252,7 @@ jobs:
       - name: Build the client installers (with update signatures)
         shell: bash
         env:
-          KLANT: ${{ inputs.klant }}
+          KLANT: ${{ matrix.klant }}
           ARGS: ${{ matrix.args }}
           BUNDLE: ${{ matrix.bundle }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
@@ -259,9 +299,10 @@ jobs:
           done
           ls -l deel
 
+      # Underscores, which no client name has: "deel_stb_*" must not match stb-kozijnen's parts.
       - uses: actions/upload-artifact@v7
         with:
-          name: deel-${{ inputs.klant }}-${{ matrix.os }}
+          name: deel_${{ matrix.klant }}_${{ matrix.os }}
           path: deel/
           if-no-files-found: error
           retention-days: 1
@@ -279,9 +320,14 @@ jobs:
           msi="$(ls gg-app/src-tauri/target/release/bundle/msi/*.msi | head -n 1)"
           node gg-app/scripts/smoke-packaged-windows.mjs --artifact "$msi"
 
+  # Only when every build of every client is green: one release, or none.
   uitlevering:
-    name: latest.json · ${{ inputs.klant }}
-    needs: installer
+    name: latest.json · ${{ matrix.klant }}
+    needs: [bron, installer]
+    strategy:
+      fail-fast: false
+      matrix:
+        klant: ${{ fromJSON(needs.bron.outputs.lijst) }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # Only for the source key: the manifest script comes from the private source.
@@ -312,7 +358,7 @@ jobs:
 
       - uses: actions/download-artifact@v8
         with:
-          pattern: deel-${{ inputs.klant }}-*
+          pattern: deel_${{ matrix.klant }}_*
           path: deel
           merge-multiple: true
 
@@ -321,7 +367,7 @@ jobs:
       - name: Release files, latest.json (signatures checked against tauri.conf.json), checksums
         shell: bash
         env:
-          KLANT: ${{ inputs.klant }}
+          KLANT: ${{ matrix.klant }}
           BRON: ${{ inputs.bron }}
         run: |
           set -euo pipefail
@@ -345,7 +391,7 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: installer-${{ inputs.klant }}
+          name: installer-${{ matrix.klant }}
           path: uitlevering/
           if-no-files-found: error
           retention-days: 14
